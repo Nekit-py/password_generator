@@ -56,17 +56,24 @@ struct Password {
 impl Default for Password {
     fn default() -> Self {
         let properties = PasswordProperties::default();
-        let mut pwd = String::new();
+        let mut prefix = String::new();
         let mut pwd_chars = Vec::with_capacity(properties.len as usize);
 
-        for chars in properties.difficulty.iter() {
-            pwd.push(*chars.choose(&mut thread_rng()).unwrap());
-            pwd_chars = chars.into_iter().chain(chars.into_iter()).collect()
+        for vec in properties.difficulty.iter() {
+            prefix.push(*vec.choose(&mut thread_rng()).unwrap());
+            for char in vec.iter() {
+                pwd_chars.push(char.clone())
+            }
         }
+        let mut pwd = pwd_chars
+            .choose_multiple(
+                &mut rand::thread_rng(),
+                properties.len as usize - properties.difficulty.len() as usize,
+            )
+            .into_iter()
+            .collect::<String>();
 
-        for _ in properties.difficulty.len() as u8..properties.len {
-            pwd.push(**pwd_chars.choose(&mut thread_rng()).unwrap());
-        }
+        pwd = [prefix, pwd].join("");
 
         Password { password: pwd }
     }
@@ -74,17 +81,24 @@ impl Default for Password {
 
 impl Password {
     fn gen_pwd(properties: PasswordProperties) -> Password {
-        let mut pwd = String::new();
-        let mut pwd_chars = Vec::new();
+        let mut prefix = String::new();
+        let mut pwd_chars = Vec::with_capacity(properties.len as usize);
 
-        for chars in properties.difficulty.iter() {
-            pwd.push(*chars.choose(&mut thread_rng()).unwrap());
-            pwd_chars = chars.into_iter().chain(chars.into_iter()).collect()
+        for vec in properties.difficulty.iter() {
+            prefix.push(*vec.choose(&mut thread_rng()).unwrap());
+            for char in vec.iter() {
+                pwd_chars.push(char.clone())
+            }
         }
+        let mut pwd = pwd_chars
+            .choose_multiple(
+                &mut rand::thread_rng(),
+                properties.len as usize - properties.difficulty.len() as usize,
+            )
+            .into_iter()
+            .collect::<String>();
 
-        for _ in properties.difficulty.len() as u8..properties.len {
-            pwd.push(**pwd_chars.choose(&mut thread_rng()).unwrap());
-        }
+        pwd = [prefix.clone(), pwd].join("");
 
         Password { password: pwd }
     }
@@ -99,18 +113,20 @@ fn get_user_input() -> String {
 }
 
 fn main() {
-    println!("Please set the password length:");
+    println!("Please set the password length (max length is 255):");
     let length = {
         let input_string = get_user_input();
-        input_string.trim().parse::<u8>().unwrap()
+        input_string.trim().parse::<u8>().unwrap_or(8)
     };
 
     println!("Please set the password difficulty:");
     let difficulty = {
-        match get_user_input().as_str() {
-            "easy" | "simple" | "low" => Some(vec![NUMBERS.to_vec(), LETTERS_LOWER.to_vec()]),
-            "medium" | "default" | "midle" => None,
-            "hard" | "strong" | "expert" => Some(vec![
+        match get_user_input().as_str().trim() {
+            "easy" | "simple" | "low" | "short" => {
+                Some(vec![NUMBERS.to_vec(), LETTERS_LOWER.to_vec()])
+            }
+            "medium" | "default" | "midle" | "standart" => None,
+            "hard" | "strong" | "expert" | "big" => Some(vec![
                 LETTERS_LOWER.to_vec(),
                 LETTERS_UPPER.to_vec(),
                 NUMBERS.to_vec(),
