@@ -98,7 +98,7 @@ impl Password {
             .into_iter()
             .collect::<String>();
 
-        pwd = [prefix.clone(), pwd].join("");
+        pwd = [prefix, pwd].join("");
 
         Password { password: pwd }
     }
