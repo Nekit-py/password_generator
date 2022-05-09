@@ -125,7 +125,7 @@ fn main() {
             "easy" | "simple" | "low" | "short" => {
                 Some(vec![NUMBERS.to_vec(), LETTERS_LOWER.to_vec()])
             }
-            "medium" | "default" | "midle" | "standart" => None,
+            "medium" | "default" | "middle" | "standart" => None,
             "hard" | "strong" | "expert" | "big" => Some(vec![
                 LETTERS_LOWER.to_vec(),
                 LETTERS_UPPER.to_vec(),
