@@ -49,6 +49,10 @@ impl PasswordProperties {
     }
 }
 
+trait Show {
+    fn show_password(&self);
+}
+
 struct Password {
     password: String,
 }
@@ -76,6 +80,12 @@ impl Default for Password {
         pwd = [prefix, pwd].join("");
 
         Password { password: pwd }
+    }
+}
+
+impl Show for Password {
+    fn show_password(&self) {
+        println!("New password is -> {}", self.password);
     }
 }
 
@@ -138,5 +148,6 @@ fn main() {
 
     let properties = PasswordProperties::new(Some(length), difficulty);
     let password = Password::gen_pwd(properties);
-    println!("New password is -> {}", password.password);
+    // println!("New password is -> {}", password.password);
+    password.show_password();
 }
