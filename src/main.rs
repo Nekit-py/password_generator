@@ -148,6 +148,5 @@ fn main() {
 
     let properties = PasswordProperties::new(Some(length), difficulty);
     let password = Password::gen_pwd(properties);
-    // println!("New password is -> {}", password.password);
     password.show_password();
 }
