@@ -136,6 +136,7 @@ fn main() {
                 Some(vec![NUMBERS.to_vec(), LETTERS_LOWER.to_vec()])
             }
             "medium" | "default" | "middle" | "standart" => None,
+            "pin" => Some(vec![NUMBERS.to_vec()]),
             "hard" | "strong" | "expert" | "big" => Some(vec![
                 LETTERS_LOWER.to_vec(),
                 LETTERS_UPPER.to_vec(),
@@ -148,6 +149,5 @@ fn main() {
 
     let properties = PasswordProperties::new(Some(length), difficulty);
     let password = Password::gen_pwd(properties);
-    // println!("New password is -> {}", password.password);
     password.show_password();
 }
